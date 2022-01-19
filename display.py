@@ -31,7 +31,7 @@ POWER_BELIEFES = [
     "Nigdy nie narzekaj",
     "Przestań się tłumaczyć",
     "Przestań się usprawiedliwiać",
-    "Rób co trzeba. Dyscyplina = wolność",
+    "Dyscyplina = wolność",
 ]
 
 COLOR_FRONT = "#363636"
@@ -49,7 +49,6 @@ if SIMULATION:
     font30bold = tkfont.Font(family="Helvetica", size=30, weight="bold")
 else:
     import lib.epd7in5_V2
-    from waveshare_epd import epd7in5_V2
 
     font22bold = ImageFont.truetype(os.path.join(static_dir, 'Font.ttc'), 23)
     font22 = ImageFont.truetype(os.path.join(static_dir, 'Font.ttc'), 22)
@@ -80,6 +79,7 @@ def display_powerlist():
     for i in range(5):
         display.write_text(10, 104 + i * 46, text=POWER_TASKS[i], font=font30)
 
+
 def display_text(x, y, y_step, texts: list, font, color=None):
     for i in range(len(texts)):
         display.write_text(x, y + i * y_step, text=texts[i], font=font, color=color)
@@ -92,6 +92,7 @@ def get_date_from_ntp() -> datetime.datetime:
         return datetime.datetime.fromtimestamp(response.tx_time)
     except OSError:
         return datetime.datetime.now()
+
 
 class DisplayService:
     def __init__(self, simulation: bool = True):
