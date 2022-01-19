@@ -6,6 +6,7 @@ import os
 import sys
 import tkinter as tk
 import tkinter.font as tkfont
+from ntplib import NTPClient
 
 from PIL import Image, ImageDraw, ImageFont, ImageTk
 
@@ -48,7 +49,7 @@ if SIMULATION:
     font30 = tkfont.Font(family="Helvetica", size=30, weight="normal")
     font30bold = tkfont.Font(family="Helvetica", size=30, weight="bold")
 else:
-    import lib.epd7in5_V2
+    from waveshare_epd import epd7in5_V2
 
     font22bold = ImageFont.truetype(os.path.join(static_dir, 'Font.ttc'), 23)
     font22 = ImageFont.truetype(os.path.join(static_dir, 'Font.ttc'), 22)
@@ -87,7 +88,7 @@ def display_text(x, y, y_step, texts: list, font, color=None):
 
 def get_date_from_ntp() -> datetime.datetime:
     try:
-        client = ntplib.NTPClient()
+        client = NTPClient()
         response = client.request('pool.ntp.org')
         return datetime.datetime.fromtimestamp(response.tx_time)
     except OSError:
@@ -162,8 +163,9 @@ try:
         ui_image = ImageTk.PhotoImage(Image.open("static/ui-0.3.bmp"))
     else:
         ui_image = Image.open(os.path.join("static/ui-0.3.bmp"))
-    display.add_image(ui_image)
 
+    display.add_image(ui_image)
+    display_calendar()
     display_text(x=10, y=104, y_step=46, texts=POWER_TASKS, font=font30)
     display_text(x=10, y=340, y_step=33, texts=POWER_BELIEFES, font=font28, color=255)
 
