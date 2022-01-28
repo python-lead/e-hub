@@ -4,6 +4,7 @@ import datetime
 import logging
 import os
 import sys
+import time
 import tkinter as tk
 import tkinter.font as tkfont
 from ntplib import NTPClient
@@ -13,8 +14,6 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "e-hub/static")
 lib_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "e-hub/lib")
 
-print(f"STATIC_DIR: {static_dir}")
-
 if os.path.exists(lib_dir):
     sys.path.append(lib_dir)
 
@@ -22,17 +21,15 @@ ENVIRONMENT = os.environ.get("ENVIRONMENT")
 SIMULATION = False  # if ENVIRONMENT == "rpi" else True
 
 POWER_TASKS = [
-    "› Dziennik",
-    "› Trening|Spacer",
-    "› Intensywna praca",
-    "› 10k kroków",
+  # "› Buduje swoje wymarzone ciało", # max in line
+    "› Konsumuje tylko to co mnie",
+    "  wzmacnia",
+    "› Tworzę się każdego dnia",
+    "› Audaces fortuna iuvat",
     "",
 ]
 POWER_BELIEFES = [
-    "Nigdy nie narzekaj",
-    "Przestań się tłumaczyć",
-    "Przestań się usprawiedliwiać",
-    "Dyscyplina = wolność",
+    "› Never explain, never complain ‹",
 ]
 
 COLOR_FRONT = "#363636"
@@ -71,7 +68,7 @@ def display_calendar():
         font=font30bold
     )
     display.write_text(
-        60, 15, text=timestamp.strftime("%b %Y - %A"),
+        60, 15, text=timestamp.strftime("%b %Y %A %H:%M"),
         font=font30
     )
 
@@ -157,6 +154,12 @@ class DisplayService:
 
 try:
     display = DisplayService(simulation=SIMULATION)
+    if "startup" in sys.argv:
+        logging.info("Startup mode")
+        logging.info("Awaiting 15 seconds")
+        time.sleep(15)
+
+    display = DisplayService(simulation=SIMULATION)
 
     # Images
     if SIMULATION:
@@ -166,8 +169,8 @@ try:
 
     display.add_image(ui_image)
     display_calendar()
-    display_text(x=10, y=104, y_step=46, texts=POWER_TASKS, font=font30)
-    display_text(x=10, y=340, y_step=33, texts=POWER_BELIEFES, font=font28, color=255)
+    display_text(x=10, y=104, y_step=46, texts=POWER_TASKS, font=font28)
+    display_text(x=12, y=340, y_step=33, texts=POWER_BELIEFES, font=font28, color="white")
 
     display.run()
 
