@@ -4,6 +4,7 @@ import datetime
 import logging
 import os
 import sys
+import time
 import tkinter as tk
 import tkinter.font as tkfont
 from ntplib import NTPClient
@@ -13,8 +14,6 @@ from PIL import Image, ImageDraw, ImageFont, ImageTk
 static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "e-hub/static")
 lib_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "e-hub/lib")
 
-print(f"STATIC_DIR: {static_dir}")
-
 if os.path.exists(lib_dir):
     sys.path.append(lib_dir)
 
@@ -22,10 +21,10 @@ ENVIRONMENT = os.environ.get("ENVIRONMENT")
 SIMULATION = False  # if ENVIRONMENT == "rpi" else True
 
 POWER_TASKS = [
-    "› Dziennik",
-    "› Trening|Spacer",
-    "› Intensywna praca",
-    "› 10k kroków",
+    "› Mar: 10k daily + IF",
+    "› Apr: 2 days solo moto trip",
+    "› May: Six pack",
+    "",
     "",
 ]
 POWER_BELIEFES = [
@@ -71,7 +70,7 @@ def display_calendar():
         font=font30bold
     )
     display.write_text(
-        60, 15, text=timestamp.strftime("%b %Y - %A"),
+        60, 15, text=timestamp.strftime("%b %Y %A %H:%M"),
         font=font30
     )
 
@@ -156,6 +155,12 @@ class DisplayService:
 
 
 try:
+    display = DisplayService(simulation=SIMULATION)
+    if "startup" in sys.argv:
+        logging.info("Startup mode")
+        logging.info("Awaiting 15 seconds")
+        time.sleep(15)
+
     display = DisplayService(simulation=SIMULATION)
 
     # Images
