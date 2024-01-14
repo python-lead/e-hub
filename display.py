@@ -10,6 +10,7 @@ import tkinter.font as tkfont
 from ntplib import NTPClient
 
 from PIL import Image, ImageDraw, ImageFont, ImageTk
+from notion import NotionService
 
 static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "e-hub/static")
 lib_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "e-hub/lib")
@@ -18,19 +19,7 @@ if os.path.exists(lib_dir):
     sys.path.append(lib_dir)
 
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
-SIMULATION = False  # if ENVIRONMENT == "rpi" else True
-
-POWER_TASKS = [
-  # "› Buduje swoje wymarzone ciało", # max in line
-    "› Konsumuje tylko to co mnie",
-    "  wzmacnia",
-    "› Tworzę się każdego dnia",
-    "› Audaces fortuna iuvat",
-    "",
-]
-POWER_BELIEFES = [
-    "› Never explain, never complain ‹",
-]
+SIMULATION = False if ENVIRONMENT == "rpi" else True
 
 COLOR_FRONT = "#363636"
 COLOR_BACK = "#ececec"
@@ -71,11 +60,6 @@ def display_calendar():
         60, 15, text=timestamp.strftime("%b %Y %A %H:%M"),
         font=font30
     )
-
-
-def display_powerlist():
-    for i in range(5):
-        display.write_text(10, 104 + i * 46, text=POWER_TASKS[i], font=font30)
 
 
 def display_text(x, y, y_step, texts: list, font, color=None):
@@ -167,10 +151,19 @@ try:
     else:
         ui_image = Image.open(os.path.join("static/ui-0.3.bmp"))
 
+    notion_service = NotionService()
+    notion_data = notion_service.get_e_display_data()
+
+    data_goals = [f"› {x['data']}" for x in notion_data if x.get("type") == "goals"]
+    data_resolutions = [f"› {x['data']}" for x in notion_data if x.get("type") == "resolution"]
+
     display.add_image(ui_image)
     display_calendar()
-    display_text(x=10, y=104, y_step=46, texts=POWER_TASKS, font=font28)
-    display_text(x=12, y=340, y_step=33, texts=POWER_BELIEFES, font=font28, color="white")
+    # Goal list
+    display_text(x=10, y=104, y_step=46, texts=data_goals, font=font28)
+
+    # Resolution box
+    display_text(x=12, y=340, y_step=33, texts=data_resolutions, font=font28, color="white")
 
     display.run()
 
