@@ -3,4 +3,5 @@ numpy==1.22.0
 opencv-python==4.5.5.62
 Pillow==9.0.0
 ntplib==0.4.0
+notion-client==2.2.1
 tk
