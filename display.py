@@ -10,7 +10,7 @@ import tkinter.font as tkfont
 from ntplib import NTPClient
 
 from PIL import Image, ImageDraw, ImageFont, ImageTk
-from notion import NotionService
+from notion_services import NotionService
 
 static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "e-hub/static")
 lib_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), "e-hub/lib")
