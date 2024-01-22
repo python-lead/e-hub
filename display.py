@@ -154,8 +154,12 @@ try:
     notion_service = NotionService()
     notion_data = notion_service.get_e_display_data()
 
-    data_goals = [f"› {x['data']}" for x in notion_data if x.get("type") == "goals"]
-    data_resolutions = [f"› {x['data']}" for x in notion_data if x.get("type") == "resolution"]
+    data_goals = [
+        f"{f'>{x["data"]}' if x.get("data") else ''}" for x in notion_data if x.get("type") == "goals"
+    ]
+    data_resolutions = [
+        f"{f'>{x["data"]}' if x.get("data") else ''}" for x in notion_data if x.get("type") == "resolution"
+    ]
 
     display.add_image(ui_image)
     display_calendar()
